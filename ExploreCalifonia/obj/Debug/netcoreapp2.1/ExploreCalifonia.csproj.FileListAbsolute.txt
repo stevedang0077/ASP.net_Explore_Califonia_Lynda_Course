@@ -1,0 +1,14 @@
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\bin\Debug\netcoreapp2.1\ExploreCalifonia.deps.json
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\bin\Debug\netcoreapp2.1\ExploreCalifonia.runtimeconfig.json
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\bin\Debug\netcoreapp2.1\ExploreCalifonia.runtimeconfig.dev.json
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\bin\Debug\netcoreapp2.1\ExploreCalifonia.dll
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\bin\Debug\netcoreapp2.1\ExploreCalifonia.pdb
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.csprojAssemblyReference.cache
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.csproj.CoreCompileInputs.cache
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.RazorAssemblyInfo.cache
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.RazorAssemblyInfo.cs
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.AssemblyInfoInputs.cache
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.AssemblyInfo.cs
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.RazorTargetAssemblyInfo.cache
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.dll
+C:\Users\Steve\Desktop\Best Github\ExploreCA\ExploreCalifonia\ExploreCalifonia\obj\Debug\netcoreapp2.1\ExploreCalifonia.pdb
