@@ -46,6 +46,8 @@ namespace ExploreCalifonia
             {
                 await context.Response.WriteAsync("I'm in Starbucks! The bagel smells soooo good! <3");
             });
+
+            //app.UseFileServer();
         }
     }
 }
