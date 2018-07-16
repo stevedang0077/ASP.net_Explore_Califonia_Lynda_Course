@@ -41,7 +41,7 @@ namespace ExploreCalifonia
                 await next();
             });
 
-            // Don't use this app.Run (run like hell away from this :P, use app.Use instead)
+            // Don't use this app.Run (run like hell away from this :P, use app.Use instead).
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("I'm in Starbucks! The bagel smells soooo good! <3");
