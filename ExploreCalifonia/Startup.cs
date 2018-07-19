@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace ExploreCalifonia
 {
@@ -27,9 +28,24 @@ namespace ExploreCalifonia
             app.UseExceptionHandler("/error.html");
             // NOTE^: we need to create an error.html file.
 
+            // Config to turn on and off the dev mode:
+            var configuration = new ConfigurationBuilder()
+                                    .AddEnvironmentVariables()
+                                    .Build();
+
             // Everything in here will be executed by order, if a logic is match, then it will get executed,
             // and ignore others below it.
-            if (env.IsDevelopment())
+
+            // This will return null in the condition because we have not created the variable 
+            // EnableDeveloperException yet. If we run this, the browser will skip the dev mode
+            // and run the error.html file.
+            //if (configuration["EnableDeveloperException"] == "True"){
+            //    app.UseDeveloperExceptionPage();
+            //}
+
+            // Get the boolean value from the variable in Properties,
+            // return false in condition if the var isn't there
+            if (configuration.GetValue<bool>("EnableDeveloperException"))
             {
                 app.UseDeveloperExceptionPage();
             }

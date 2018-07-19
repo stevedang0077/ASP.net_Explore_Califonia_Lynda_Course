@@ -114,4 +114,38 @@ localhost:4200/invalid - Ta da!
 
 To get back to dev mode, just change its value back to "Development" from "Production".
 ```
+### Custom Configuration Library - Dependency (Built in from MS):
+Create an instance of the ConfigurationBuilder object:
+NOTE^: this one is from config library, bring it in to use it:
+```
+using Microsoft.Extensions.Configuration;
+
+// Config to turn on and off the dev mode:
+var configuration = new ConfigurationBuilder()
+                        .AddEnvironmentVariables()
+                        .Build();
+
+// Everything in here will be executed by order, if a logic is match, then it will get executed,
+// and ignore others below it.
+
+// This will return null in the condition because we have not created the variable 
+// EnableDeveloperException yet. If we run this, the browser will skip the dev mode
+// and run the error.html file.
+if (configuration["EnableDeveloperException"] == "True")
+{
+    app.UseDeveloperExceptionPage();
+}
+```
+If we add the EnableDeveloperException to True in the Project/Properties then the 
+custom error.html page won't be there and the stack trace for developers will show up.
+
+Another way to do this if statement is:
+```
+// Get the boolean value from the variable in Properties,
+// return false in condition if the var isn't there
+if (configuration.GetValue<bool>("EnableDeveloperException"))
+{
+    app.UseDeveloperExceptionPage();
+}
+```
 
