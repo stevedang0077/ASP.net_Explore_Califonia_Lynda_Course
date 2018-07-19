@@ -73,3 +73,45 @@ Use: app.UseFileServer();
 ```
 This middleware will register the static files in the wwwroot folder.
 ```
+### Error Handling and Diagnostics:
+Startup.cs File:
+```
+Add this code below to check if the link url has something like this:
+https://localhost:44335/invalid then the error message will be rendered:
+
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.Value.Contains("invalid"))
+        throw new Exception("Error!!!!!");
+    await next();
+});
+```
+There are 4 tabs Stack/Query/Cookies/Headers that are very useful to check the code.
+These came from the code below that MS ASP.net included for developers:
+```
+if (env.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+```
+For users:
+```
+// This will listen and get fire on any error event that happened during the req,res
+// More user friendly, because they don't care about the stack trace, debugging the code
+// like the developers ^^
+app.UseExceptionHandler("/error.html");
+// NOTE^: we need to create an error.html file.
+```
+In order to see the error in production mode, disable dev environment:
+```
+Right click:
+Project's name/Properties/Debug/ASPNETCORE_ENVIRONMENT
+Set the value to other thing ie: "Production" instead for "Development",
+then the application will no longer be in dev mode.
+
+Navigate back to the web and refresh to see the custom error page:
+localhost:4200/invalid - Ta da!
+
+To get back to dev mode, just change its value back to "Development" from "Production".
+```
+

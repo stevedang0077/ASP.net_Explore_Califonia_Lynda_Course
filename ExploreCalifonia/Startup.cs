@@ -21,6 +21,12 @@ namespace ExploreCalifonia
         // Middleware in the pipeline ;)
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // This will listen and get fire on any error event that happened during the req,res
+            // More user friendly, because they don't care about the stack trace, debugging the code
+            // like the developers ^^
+            app.UseExceptionHandler("/error.html");
+            // NOTE^: we need to create an error.html file.
+
             // Everything in here will be executed by order, if a logic is match, then it will get executed,
             // and ignore others below it.
             if (env.IsDevelopment())
@@ -28,7 +34,13 @@ namespace ExploreCalifonia
                 app.UseDeveloperExceptionPage();
             }
 
-            
+            // This is just an example for an invalid url localhost:4200/invalid
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.Value.Contains("invalid"))
+                    throw new Exception("Error!!!!!");
+                await next();
+            });
 
             app.UseFileServer();
         }
