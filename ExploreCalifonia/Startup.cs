@@ -31,7 +31,10 @@ namespace ExploreCalifonia
             // Config to turn on and off the dev mode:
             var configuration = new ConfigurationBuilder()
                                     .AddEnvironmentVariables()
+                                    .AddJsonFile(env.ContentRootPath + "/config.json")
                                     .Build();
+            // ^^ add the JsonFile to read the config from a json file,
+            // make sure to give it a path tho.
 
             // Everything in here will be executed by order, if a logic is match, then it will get executed,
             // and ignore others below it.
@@ -45,7 +48,12 @@ namespace ExploreCalifonia
 
             // Get the boolean value from the variable in Properties,
             // return false in condition if the var isn't there
-            if (configuration.GetValue<bool>("EnableDeveloperException"))
+            //if (configuration.GetValue<bool>("EnableDeveloperException"))
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+
+            if (configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions"))
             {
                 app.UseDeveloperExceptionPage();
             }

@@ -148,4 +148,62 @@ if (configuration.GetValue<bool>("EnableDeveloperException"))
     app.UseDeveloperExceptionPage();
 }
 ```
+### Populate Config Setting - from json file:
+To read the json config file, add the AddJsonFile() method and the path to the config.json
+Also, we need to create the config.json or it'll throw an exception. Like below:
+```
+// Config to turn on and off the dev mode:
+var configuration = new ConfigurationBuilder()
+                        .AddEnvironmentVariables()
+                        .AddJsonFile(env.ContentRootPath + "/config.json")
+                        .Build();
+// ^^ add the JsonFile to read the config from a json file,
+// make sure to give it a path tho.
+```
+To create an json file, right click:
+```
+Project's name/Add/New Item(Ctrl Shjft A)
+Choose data tab/json
+Give it a name. Finish.
 
+{
+  "EnableDeveloperExceptions": true,
+}
+```
+The config can also read the crazy json file:
+```
+{
+  "FeatureToggles": {
+    "EnableDeveloperExceptions": true
+  }
+}
+```
+To access the value in this object, it uses ":" instead for a "."
+```
+if (configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions"))
+{
+    app.UseDeveloperExceptionPage();
+}
+```
+To add an optional config file for all the development process, simply add one more method,
+the 2nd param is optional, which why it's set to true.
+No file like this? no problem because this is just an optional file. (No exception at all)
+```
+var configuration = new ConfigurationBuilder()
+                        .AddEnvironmentVariables()
+                        .AddJsonFile(env.ContentRootPath + "/config.json")
+                        .AddJsonFile(env.ContentRootPath + "/config.development.json", true)
+                        .Build();
+Create the json.development.json file, then remove the EnableDeveloperExceptions in the config.json file.
+{
+  "FeatureToggles": {
+  }
+}
+Only leave this option in the new file.
+{
+  "FeatureToggles": {
+    "EnableDeveloperExceptions": true
+  }
+}
+```
+The Dev Mode still working!! 
