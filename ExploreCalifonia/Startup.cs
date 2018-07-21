@@ -12,15 +12,46 @@ namespace ExploreCalifonia
 {
     public class Startup
     {
+        private readonly IConfigurationRoot configuration;
+
+        public Startup(IHostingEnvironment env)
+        {
+            // Config to turn on and off the dev mode:
+            configuration = new ConfigurationBuilder()
+                                    .AddEnvironmentVariables()
+                                    .AddJsonFile(env.ContentRootPath + "/config.json")
+                                    .AddJsonFile(env.ContentRootPath + "/config.development.json", true)
+                                    .Build();
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<FeatureToggles>();
+            // we can create the new instance like this, just an example.
+            // But this is the same thing that ASP.net Core did already, so no need. 
+            // services.AddTransient<FeatureToggles>(x => new FeatureToggles());
+
+            // Now we can reference the config in the Startup method above
+            services.AddTransient<FeatureToggles>(x => new FeatureToggles
+            {
+                // Now we can use the FeatureToggles Class
+                EnableDeveloperExceptions =
+                configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions")
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // Middleware in the pipeline ;)
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env,
+            FeatureToggles feature
+            )
+        //^^ NOTE: injected the new class into this method, then use it.
+        // This is similar to Angular services, where we inject the services into the constructor.
         {
             // This will listen and get fire on any error event that happened during the req,res
             // More user friendly, because they don't care about the stack trace, debugging the code
@@ -28,13 +59,17 @@ namespace ExploreCalifonia
             app.UseExceptionHandler("/error.html");
             // NOTE^: we need to create an error.html file.
 
+            // ================= Moved this into a Startup method above =====================
             // Config to turn on and off the dev mode:
-            var configuration = new ConfigurationBuilder()
-                                    .AddEnvironmentVariables()
-                                    .AddJsonFile(env.ContentRootPath + "/config.json")
-                                    .Build();
+            //var configuration = new ConfigurationBuilder()
+            //                        .AddEnvironmentVariables()
+            //                        .AddJsonFile(env.ContentRootPath + "/config.json")
+            //                        .AddJsonFile(env.ContentRootPath + "/config.development.json", true)
+            //                        .Build();
             // ^^ add the JsonFile to read the config from a json file,
             // make sure to give it a path tho.
+            // ================= Moved this into a Startup method above =====================
+
 
             // Everything in here will be executed by order, if a logic is match, then it will get executed,
             // and ignore others below it.
@@ -53,7 +88,9 @@ namespace ExploreCalifonia
             //    app.UseDeveloperExceptionPage();
             //}
 
-            if (configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions"))
+            // Commented out to test the new service
+            //if (configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions"))
+            if (feature.EnableDeveloperExceptions)
             {
                 app.UseDeveloperExceptionPage();
             }

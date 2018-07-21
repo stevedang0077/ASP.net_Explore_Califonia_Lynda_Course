@@ -1,4 +1,17 @@
 ## Ch1. The basics:
+Short cut and tricks:
+```
+Create a constructor:
+    ctor -> tab twice
+    public Startup()
+    { // more code here ... }
+
+Quick actions / refactorings:
+    Ctrl + .
+
+
+```
+
 ### Reponse to HTTP requests:
 File Name: Startup.cs
 ```
@@ -207,3 +220,167 @@ Only leave this option in the new file.
 }
 ```
 The Dev Mode still working!! 
+
+### Increase Maintainability with Dependency Injection:
+This code below can be converted into a module that do one thing well,
+so the next step is to convert this into a module, and then inject it into our project.
+Reason?: Because the config is depending on this configuration object, for code efficient
+why not put this into a separated module? ;)
+```
+// Config to turn on and off the dev mode:
+var configuration = new ConfigurationBuilder()
+                        .AddEnvironmentVariables()
+                        .AddJsonFile(env.ContentRootPath + "/config.json")
+                        .AddJsonFile(env.ContentRootPath + "/config.development.json", true)
+                        .Build();
+// ^^ add the JsonFile to read the config from a json file,
+// make sure to give it a path tho.
+
+// Everything in here will be executed by order, if a logic is match, then it will get executed,
+// and ignore others below it.
+
+// This will return null in the condition because we have not created the variable 
+// EnableDeveloperException yet. If we run this, the browser will skip the dev mode
+// and run the error.html file.
+//if (configuration["EnableDeveloperException"] == "True"){
+//    app.UseDeveloperExceptionPage();
+//}
+
+// Get the boolean value from the variable in Properties,
+// return false in condition if the var isn't there
+//if (configuration.GetValue<bool>("EnableDeveloperException"))
+//{
+//    app.UseDeveloperExceptionPage();
+//}
+
+
+if (configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions"))
+{
+    app.UseDeveloperExceptionPage();
+}
+```
+Project'name/Add/Class -> Name: FeatureToggles.cs
+```
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ExploreCalifonia
+{
+    public class FeatureToggles
+    {
+        // Added this line, then add another parameter in the Startup.cs File.
+        public bool EnableDeveloperExceptions { get; set; }
+    }
+}
+```
+Add another param for the public void Configure(IApplicationBuilder app, IHostingEnvironment env):
+```
+public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env,
+            FeatureToggles feature
+        )
+//^^ NOTE: injected the new class into this method, then use it.
+// This is similar to Angular services, where we inject the services into the constructor.
+{ // More code here ... }
+```
+Not ready yet to run, we're only 1/2 way done.
+ASP.net Core will throw an exception if we run the code now. just FYI :D
+Next step:
+1.  Startup.cs/ConfigureServices method:
+
+```
+// This method gets called by the runtime. Use this method to add services to the container.
+// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+public void ConfigureServices(IServiceCollection services)
+{
+    // Add services here ... ^^
+}
+```
+Services: Out of all helpful methods, the AddScoped, AddSingleton, and AddTransient tell ASP.net to create instances of types when they are requested. 
+```
+Diff. between these are how long the lifespand.
+1. Transient:
+    Shortest lifespan: An instance will be created every time one is requested.
+        ie: if there are two requested the same config, ASP.net will create two instances, no sharing.
+2. Scoped:
+    A single instance will be created for each "scope". In ASP.net Core MVC, the "scope" is almost always the current web request.
+        ie: Allow to share states between diff. components through out the same request w/o worring about a diff request from the user gaining access to that request.
+3. Singleton:
+    A single instance will be created for the entire application.
+        ie: share data cross requests. Use for common data to share.
+
+=> In this project, we will use the Transient.
+```
+Add services trasient to the ConfigureServies method:
+```
+// This method gets called by the runtime. Use this method to add services to the container.
+// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddTransient<FeatureToggles>();
+}
+```
+Run the application and Woa-la!! It's running, but we're not done.
+```
+ctor - Tab twice to create a constructor.
+// Config to turn on and off the dev mode:
+configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .AddJsonFile(env.ContentRootPath + "/config.json")
+                .AddJsonFile(env.ContentRootPath + "/config.development.json", true)
+                .Build();
+
+Ctrl + . on configuration to get a quick fix.
+private readonly IConfigurationRoot configuration;
+
+Add public Startup(IHostingEnvironment env)
+```
+The Startup method will look like this:
+```
+private readonly IConfigurationRoot configuration;
+
+public Startup(IHostingEnvironment env)
+{
+    // Config to turn on and off the dev mode:
+    configuration = new ConfigurationBuilder()
+                            .AddEnvironmentVariables()
+                            .AddJsonFile(env.ContentRootPath + "/config.json")
+                            .AddJsonFile(env.ContentRootPath + "/config.development.json", true)
+                            .Build();
+}
+```
+Then we can reference the config in the ConfigureServices method, the featureToggles class:
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddTransient<FeatureToggles>();
+    // we can create the new instance like this, just an example.
+    // But this is the same thing that ASP.net Core did already, so no need. 
+    // services.AddTransient<FeatureToggles>(x => new FeatureToggles());
+
+    // Now we can reference the config in the Startup method above
+    services.AddTransient<FeatureToggles>(x => new FeatureToggles
+    {
+        // Now we can use the FeatureToggles Class 
+        // ^ THIS IS A DEPENDENCY INJECTED!!
+        EnableDeveloperExceptions =
+        configuration.GetValue<bool>("FeatureToggles:EnableDeveloperExceptions")
+
+    });
+}
+```
+Put a break point here to see the FeatureToggles in action: value changed to true.
+```
+if (feature.EnableDeveloperExceptions)
+{
+    app.UseDeveloperExceptionPage();
+}
+```
+o Low-level APIs
+o Simple Logic 
+o Static Files
+
+### DONE WITH CHAPTER 1! TIME FOR FOOD.
