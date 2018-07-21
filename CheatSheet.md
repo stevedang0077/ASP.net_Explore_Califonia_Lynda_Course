@@ -62,25 +62,25 @@ Copy & Paste these files into wwwroot folder.
 ```
 Startup.cs File:
 ```
-    Delete the middlewares:
-    // app.Use takes in two params: 1st: request, 2nd: next middle ware
-            // makesure to add await next(); so the compiler know when to go to the next method/logic/function
-            app.Use(async (context, next) =>
-            {
-                // how to make it run this method only on some url/path?
-                // if the url matched, the content will get rendered, otherwise no Gucci ^^
-                if (context.Request.Path.StartsWithSegments("/hello"))
-                {
-                    await context.Response.WriteAsync("hello path matched!! Hello from Starbucks! ");
-                }
-                await next();
-            });
+Delete the middlewares:
+// app.Use takes in two params: 1st: request, 2nd: next middle ware
+// makesure to add await next(); so the compiler know when to go to the next method/logic/function
+app.Use(async (context, next) =>
+{
+    // how to make it run this method only on some url/path?
+    // if the url matched, the content will get rendered, otherwise no Gucci ^^
+    if (context.Request.Path.StartsWithSegments("/hello"))
+    {
+        await context.Response.WriteAsync("hello path matched!! Hello from Starbucks! ");
+    }
+    await next();
+});
 
-            // Don't use this app.Run (run like hell away from this :P, use app.Use instead).
-            app.Run(async (context) =>
-            {
-                await context.Response.WriteAsync("I'm in Starbucks! The bagel smells soooo good! <3");
-            });
+// Don't use this app.Run (run like hell away from this :P, use app.Use instead).
+app.Run(async (context) =>
+{
+    await context.Response.WriteAsync("I'm in Starbucks! The bagel smells soooo good! <3");
+});
 ```
 Use: app.UseFileServer();
 ```
